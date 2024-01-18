@@ -1,0 +1,13 @@
+{
+    "features": [
+        {
+            "name": "A",
+            "weight": 50
+        },
+        {
+            "name": "B",
+            "weight": 50
+        }
+    ],
+    "tokenControlPath":"/Users/kesihainalselvarajoo/Documents/smart-throttle/test"
+}
