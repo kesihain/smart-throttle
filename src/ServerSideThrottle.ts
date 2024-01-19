@@ -16,6 +16,7 @@ interface ResponseData {
 
 interface ServerSideThrottleConfig extends Partial<TokenConfig> {
     features: Array<Action>
+    pathList?: Array<string>
 }
 
 
@@ -23,7 +24,7 @@ class ServerSideThrottle {
     throttleControlPath: string;
     features: Array<Action>;
     tokens: Tokens;
-    pathList: Array<string>;
+    pathList?: Array<string>;
 
     /**
    * @param {string} throttleControlPath - Path for configuration file
@@ -55,11 +56,15 @@ class ServerSideThrottle {
         this.features = args.features
         this.tokens = new Tokens()
         this.tokens.setTokens(args)
+        this.pathList = args.pathList
     }
 
     throttle(req: Request, res: Response, next: Function) {
 
-        if (this.pathList.includes(req.path)) {
+        if(this.pathList && !this.pathList.includes(req.path)){
+            next()
+            return;
+        }
 
             const token = this.tokens.popToken()
 
@@ -83,9 +88,6 @@ class ServerSideThrottle {
                     break;
                 }
             }
-        }
-
-        next();
 
 
     }
