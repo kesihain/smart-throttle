@@ -22,12 +22,14 @@ interface ServerSideThrottleConfig extends Partial<TokenConfig> {
 class ServerSideThrottle {
     throttleControlPath: string;
     features: Array<Action>;
-    tokens: Tokens
+    tokens: Tokens;
+    pathList: Array<string>;
 
     /**
    * @param {string} throttleControlPath - Path for configuration file
    * @param {Array<Tokens>} tokens - Array of Tokens
    * @param {Array<Features>} features - Array of Features
+   * @param {Array<string>} pathList - Array of paths that are impacted
    */
 
     constructor(throttleControlPath: string) {
@@ -57,28 +59,34 @@ class ServerSideThrottle {
 
     throttle(req: Request, res: Response, next: Function) {
 
-        const token = this.tokens.popToken()
+        if (this.pathList.includes(req.path)) {
 
-        switch (true) {
-            case token == 'NEXT': {
-                next();
-                break;
+            const token = this.tokens.popToken()
 
-            }
+            switch (true) {
+                case token == 'NEXT': {
+                    next();
+                    break;
 
-            case token != '': {
+                }
 
-                const action:Action | undefined =  this.features.find(item=>item.name == token);
-                if(action && action.response){
-                    return res.status(action.response.status).json(action.response.body)
+                case token != '': {
+
+                    const action: Action | undefined = this.features.find(item => item.name == token);
+                    if (action && action.response) {
+                        return res.status(action.response.status).json(action.response.body)
+                    }
+                }
+
+                default: {
+                    next();
+                    break;
                 }
             }
-
-            default: {
-                next();
-                break;
-            }
         }
+
+        next();
+
 
     }
 
@@ -91,18 +99,18 @@ export default ServerSideThrottle;
 
 // Sample config below
 const sampleConfig: ServerSideThrottleConfig = {
-    features:[
+    features: [
         {
-            "name":'NEXT',
-            "weight":80
+            "name": 'NEXT',
+            "weight": 80
         },
         {
-            "name":'RETRY',
-            "weight":20,
-            "response":{
-                "status":200,
-                "body":{
-                    "message":"Try Again after some time"
+            "name": 'RETRY',
+            "weight": 20,
+            "response": {
+                "status": 200,
+                "body": {
+                    "message": "Try Again after some time"
                 }
             }
         }

@@ -2,11 +2,11 @@
     "features":[
         {
             "name":"NEXT",
-            "weight":0
+            "weight":50
         },
         {
             "name":"RETRY",
-            "weight":100,
+            "weight":50,
             "response":{
                 "status":200,
                 "body":{
@@ -14,5 +14,8 @@
                 }
             }
         }
+    ],
+    "pathList":[
+        "/api/test/intercept"
     ]
 }

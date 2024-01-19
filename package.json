@@ -1,7 +1,7 @@
 {
   "name": "smart-throttle",
-  "version": "1.0.0",
-  "description": "Module to perform functional load balancing and throttling",
+  "version": "1.0.1",
+  "description": "Module to perform functional load balancing and server side throttling",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
