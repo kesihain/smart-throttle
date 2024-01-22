@@ -8,7 +8,7 @@
 #### app.js
 ```js
 import express from 'express'
-import { MultiThrottle } from '../dist/index.js'
+import { MultiThrottle } from 'smart-throttle'
 
 const app = express();
 
