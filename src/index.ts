@@ -1,7 +1,9 @@
-import { ExportDeclaration } from "typescript"
+import { ExportDeclaration } from "typescript";
 
-import Tokens from './Tokens.js'
+import Tokens from './Tokens.js';
 
-import ServerSideThrottle from './ServerSideThrottle.js'
+import ServerSideThrottle from './ServerSideThrottle.js';
 
-export { Tokens, ServerSideThrottle }
+import MultiThrottle from './MultiThrottle.js';
+
+export { Tokens, ServerSideThrottle, MultiThrottle }

@@ -1,0 +1,67 @@
+[
+    {
+        "features": [
+            {
+                "name": "NEXT",
+                "weight": 50
+            },
+            {
+                "name": "RETRY",
+                "weight": 50,
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "message": "Try Again after some time"
+                    }
+                }
+            }
+        ],
+        "pathList": [
+            "/api/test/intercept"
+        ]
+    },
+
+    {
+        "features": [
+            {
+                "name": "NEXT",
+                "weight": 0
+            },
+            {
+                "name": "RETRY",
+                "weight": 100,
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "message": "Try Again V2"
+                    }
+                }
+            }
+        ],
+        "pathList": [
+            "/api/v2/test/intercept"
+        ]
+    },
+
+    {
+        "features": [
+            {
+                "name": "NEXT",
+                "weight": 0
+            },
+            {
+                "name": "RETRY",
+                "weight": 100,
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "message": "Try Again V3"
+                    }
+                }
+            }
+        ],
+        "pathList": [
+            "/api/v3/test/intercept"
+        ]
+    }
+]

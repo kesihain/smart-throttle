@@ -2,8 +2,119 @@
 
   Functional load balancing and server side throttling for N
 
-### Usage
+## Usage
 
+### Multiple Server Side Throttle in single setup
+#### app.js
+```js
+import express from 'express'
+import { MultiThrottle } from '../dist/index.js'
+
+const app = express();
+
+
+const ThrottleMiddleWare = new MultiThrottle('/absolutePath/multiThrottleConfig.json')
+
+// console.log('Tokens')
+// console.log(ThrottleMiddleWare.tokens.getTokens())
+
+app.use(ThrottleMiddleWare.throttle);
+
+app.get('/api/test/intercept', (req, res) => {
+    res.json({ message: 'Welcome to Test Intercept' });
+})
+
+app.get('/api/v2/test/intercept', (req, res) => {
+    res.json({ message: 'Welcome to Test Intercept' });
+})
+
+app.get('/api/v3/test/intercept', (req, res) => {
+    res.json({ message: 'Welcome to Test Intercept' });
+})
+
+app.get('/api/test/welcome',(req,res)=>{
+    res.json({message: 'Welcome to App'})
+})
+
+const PORT = 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+```
+
+#### multiThrottleConfig.json
+```json
+[
+    {
+        "features": [
+            {
+                "name": "NEXT",
+                "weight": 50
+            },
+            {
+                "name": "RETRY",
+                "weight": 50,
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "message": "Try Again after some time"
+                    }
+                }
+            }
+        ],
+        "pathList": [
+            "/api/test/intercept"
+        ]
+    },
+
+    {
+        "features": [
+            {
+                "name": "NEXT",
+                "weight": 0
+            },
+            {
+                "name": "RETRY",
+                "weight": 100,
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "message": "Try Again V2"
+                    }
+                }
+            }
+        ],
+        "pathList": [
+            "/api/v2/test/intercept"
+        ]
+    },
+
+    {
+        "features": [
+            {
+                "name": "NEXT",
+                "weight": 0
+            },
+            {
+                "name": "RETRY",
+                "weight": 100,
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "message": "Try Again V3"
+                    }
+                }
+            }
+        ],
+        "pathList": [
+            "/api/v3/test/intercept"
+        ]
+    }
+]
+```
+
+### Single Server Side Throttle
 #### app.js
 ```js
 import express from 'express'
@@ -29,7 +140,7 @@ app.listen(PORT, () => {
 });
 ```
 
-#### throttleConflig.json
+#### throttleConfig.json
 ```json
 {
     "features":[
@@ -53,6 +164,21 @@ app.listen(PORT, () => {
     ]
 }
 ```
+
+## Guide 
+| Name | Level | Location | Desc |  Sample Usage  |
+| ----------- | ----------- | ----------- | ----------- |   ----------- |
+| MultiThrottle | Class | Module Export | Class Object with throttle method to be passed to express <br>Multiple Throttle Configurations in single file  |  const ThrottleMiddleWare = new MultiThrottle('configPath.json')  |
+| ServerSideThrottle | Class | Module Export | Class Object with throttle method to be passed to express <br>Single throttle configuration per file. Need to create a new instance for each throttle configuration |  const ThrottleMiddleWare = new MultiThrottle('configPath.json')  |
+| throttle | method | MultiThrottle/ServerSideThrottle | Method consumed by express to perform throttling |  app.use(ThrottleMiddleWare.throttle);  |
+| features | field | throttleConfig.json | Array of features |  Refer Config  |
+| name | field | features | Name of Feature |  Refer Config  |
+| weight | field | features | Weightage of feature <br>Keep total to 100 to reduce complexity |  Refer Config  |
+| response | field | features | Response Details |  Refer Config  |
+| status | field |  response | HTTP status code |  Refer Config  |
+| body | field | response | Response JSON/body |  Refer Config  |
+| pathList | field | throttleConfig.json | Array of paths where throttle is enabled |  Refer Config  |
+
 
 ## Installation
 
