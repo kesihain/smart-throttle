@@ -11,7 +11,7 @@ export interface Action extends Feature {
 
 export interface ResponseData {
     status: number;
-    body: any;
+    body?: any;
     name?:string;
 }
 
@@ -91,29 +91,10 @@ class ServerSideThrottle {
         // }
 
         const token = this.tokens.popToken()
-
-        switch (true) {
-            case token == 'NEXT': {
-                next();
-                break;
-
-            }
-
-            case token != '': {
-
-                const action: Action | undefined = this.features.find(item => item.name == token);
-                if (action && action.response) {
-                    return res.status(action.response.status).json(action.response.body)
-                }
-            }
-
-            default: {
-                next();
-                break;
-            }
+        if (token && token.response) {
+            return res.status(token.response.status).json(token.response.body)
         }
-
-
+        next();
     }
 
     throttleGlobal(req: Request, res: Response, next: Function) {
@@ -132,26 +113,11 @@ class ServerSideThrottle {
 
         const token = this.tokens.popToken()
 
-        switch (true) {
-            case token == 'NEXT': {
-                return returnResponseBody('NEXT');
-
-            }
-
-            case token != '': {
-
-                const action: Action | undefined = this.features.find(item => item.name == token);
-                if (action && action.response) {
-                    return action.response
-                }
-            }
-
-            default: {
-                return returnResponseBody('NEXT');
-            }
+        if (token && token.response) {
+            return token.response;
         }
 
-
+        return returnResponseBody(token?.name ?? 'NEXT')
     }
 
     toString(){

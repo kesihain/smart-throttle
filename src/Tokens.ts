@@ -3,13 +3,19 @@ import * as fs from 'fs'
 export interface Feature {
     weight: number;
     name: string;
+    response?: MockResponse
+}
+
+export interface MockResponse {
+    status: number,
+    body?: any
 }
 
 export interface TokenConfig {
     features?: Array<Feature>;
 }
 
-const shuffle = (array: string[]) => {
+const shuffle = (array: number[]) => {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
@@ -18,9 +24,9 @@ const shuffle = (array: string[]) => {
 };
 
 class Tokens {
-    features?: Array<Feature> | undefined;
-    tokens: Array<string> = [];
-    masterTokens: Array<string> = [];
+    features: Array<Feature>;
+    tokens: Array<number> = [];
+    masterTokens: Array<number> = [];
     tokenControlPath: string;
 
     /**
@@ -59,20 +65,19 @@ class Tokens {
     }
 
     popToken() {
-
         const result = this.tokens.pop()
 
         if (this.tokens.length == 0) {
             this.tokens = this.masterTokens
         }
 
-        return result
+        return result == null ? null : this.features[result];
     }
 
     setTokens(args: TokenConfig) {
-        this.features = args.features;
-        this.features?.forEach(feature => {
-            let tempArr = Array.from({ length: feature.weight }, () => feature.name)
+        this.features = args.features ?? [];
+        this.features.forEach((feature, idx) => {
+            let tempArr = Array.from({ length: feature.weight }, () => idx)
             this.masterTokens.push(...tempArr)
         });
         this.masterTokens = shuffle(this.masterTokens)
