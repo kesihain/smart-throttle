@@ -16,27 +16,27 @@ interface GlobalThrottleConfig extends Array<ServerSideThrottleConfig> {
 
 
 class MultiThrottle {
-    gobalThrottleControlPath: string;
+    globalThrottleControlPath: string;
     throttleList?: Array<ServerSideThrottle>;
 
     /**
-   * @param {string} gobalThrottleControlPath - Path for configuration file
+   * @param {string} globalThrottleControlPath - Path for configuration file
    * @param {Array<ServerSideThrottle>} throttleList - Array of Throttling Models
    */
 
-    constructor(gobalThrottleControlPath: string) {
+    constructor(globalThrottleControlPath: string) {
 
-        this.gobalThrottleControlPath = gobalThrottleControlPath;
+        this.globalThrottleControlPath = globalThrottleControlPath;
 
-        if (gobalThrottleControlPath != '') {
+        if (globalThrottleControlPath != '') {
 
-            const configuration:GlobalThrottleConfig = JSON.parse(fs.readFileSync(this.gobalThrottleControlPath, 'utf-8'))
+            const configuration:GlobalThrottleConfig = JSON.parse(fs.readFileSync(this.globalThrottleControlPath, 'utf-8'))
 
             this.setGlobalThrottle(configuration)
 
 
-            fs.watch(gobalThrottleControlPath, (curr, prev) => {
-                const newConfiguration = JSON.parse(fs.readFileSync(gobalThrottleControlPath, 'utf-8'))
+            fs.watch(globalThrottleControlPath, (curr, prev) => {
+                const newConfiguration = JSON.parse(fs.readFileSync(globalThrottleControlPath, 'utf-8'))
                 this.setGlobalThrottle(newConfiguration)
             })
 
