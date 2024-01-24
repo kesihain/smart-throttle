@@ -15,12 +15,6 @@ export interface ResponseData {
     name?:string;
 }
 
-const returnResponseBody = (key:string):ResponseData=>{
-    return {
-        status:200,
-        name:key
-    }
-}
 
 export interface ServerSideThrottleConfig extends Partial<TokenConfig> {
     features: Array<Action>
@@ -97,7 +91,7 @@ class ServerSideThrottle {
     throttleGlobal = (req: Request, res: Response, next: Function) => {
 
         if (this.pathList && !this.pathList.includes(req.path)) {
-            return returnResponseBody('NEXT')
+            return null
         }
 
         // if(this.matchType && this.matchType == 'LIKE'){
@@ -108,13 +102,7 @@ class ServerSideThrottle {
         //     })
         // }
 
-        const token = this.tokens.popToken()
-
-        if (token && token.response) {
-            return token.response;
-        }
-
-        return returnResponseBody(token?.name ?? 'NEXT')
+        return this.tokens.popToken()
     }
 
     toString = () => {

@@ -53,9 +53,9 @@ class MultiThrottle {
 
     throttle = (req: Request, res: Response, next: Function) => {
         for (const item of this.throttleList || []) {
-            const result:ResponseData = item.throttleGlobal(req,res,next);
-            if (result.body) {
-                return res.status(result.status).json(result.body)
+            const result = item.throttleGlobal(req,res,next);
+            if (result && result.response) {
+                return res.status(result.response.status).json(result.response.body)
             }
         }
         return next();
