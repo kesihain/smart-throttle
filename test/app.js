@@ -4,7 +4,7 @@ import { ServerSideThrottle } from '../dist/index.js'
 const app = express();
 
 
-const ThrottleMiddleWare = new ServerSideThrottle('/Users/kesihainalselvarajoo/Documents/smart-throttle/test/throttleConfig.json')
+const ThrottleMiddleWare = new ServerSideThrottle('./throttleConfig.json')
 
 // console.log('Tokens')
 // console.log(ThrottleMiddleWare.tokens.getTokens())

@@ -4,7 +4,7 @@ import { MultiThrottle } from '../dist/index.js'
 const app = express();
 
 
-const ThrottleMiddleWare = new MultiThrottle('/Users/kesihainalselvarajoo/Documents/smart-throttle/test/multiThrottleConfig.json')
+const ThrottleMiddleWare = new MultiThrottle('./multiThrottleConfig.json')
 
 // console.log('Tokens')
 // console.log(ThrottleMiddleWare.tokens.getTokens())

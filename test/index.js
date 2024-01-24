@@ -1,6 +1,6 @@
 import { Tokens } from '../dist/index.js'
 
-const tokens = new Tokens('/Users/kesihainalselvarajoo/Documents/smart-throttle/test/control.json')
+const tokens = new Tokens('./control.json')
 
 const getCount = (array) => {
     const stringCount = array.reduce((acc, currentValue) => {
