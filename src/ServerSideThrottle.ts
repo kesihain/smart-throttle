@@ -47,8 +47,6 @@ class ServerSideThrottle {
     constructor(throttleControlPath: string='') {
 
         this.throttleControlPath = throttleControlPath;
-        this.throttle = this.throttle.bind(this);
-        this.toString = this.toString.bind(this);
 
         if (throttleControlPath != '') {
 
@@ -73,7 +71,7 @@ class ServerSideThrottle {
         console.log('Tokens : '+ this.tokens)
     }
     
-    throttle(req: Request, res: Response, next: Function) {
+    throttle = (req: Request, res: Response, next: Function)=> {
 
         if (this.pathList && !this.pathList.includes(req.path)) {
             next()
@@ -96,7 +94,7 @@ class ServerSideThrottle {
         next();
     }
 
-    throttleGlobal(req: Request, res: Response, next: Function) {
+    throttleGlobal = (req: Request, res: Response, next: Function) => {
 
         if (this.pathList && !this.pathList.includes(req.path)) {
             return returnResponseBody('NEXT')
@@ -119,7 +117,7 @@ class ServerSideThrottle {
         return returnResponseBody(token?.name ?? 'NEXT')
     }
 
-    toString(){
+    toString = () => {
         console.log(this.tokens)
     }
 
