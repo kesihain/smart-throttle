@@ -18,7 +18,6 @@ export interface ResponseData {
 const returnResponseBody = (key:string):ResponseData=>{
     return {
         status:200,
-        body:[],
         name:key
     }
 }

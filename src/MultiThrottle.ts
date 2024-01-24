@@ -27,8 +27,6 @@ class MultiThrottle {
     constructor(gobalThrottleControlPath: string) {
 
         this.gobalThrottleControlPath = gobalThrottleControlPath;
-        this.throttle = this.throttle.bind(this);
-        this.setGlobalThrottle = this.setGlobalThrottle.bind(this);
 
         if (gobalThrottleControlPath != '') {
 
@@ -45,34 +43,23 @@ class MultiThrottle {
         }
     }
 
-    setGlobalThrottle(args: GlobalThrottleConfig) {
-        let tempArr:Array<ServerSideThrottle> = []
-        args.forEach(item=>{
+    setGlobalThrottle = (args: GlobalThrottleConfig)=> {
+        this.throttleList = args.map(item => {
             const throttle:ServerSideThrottle = new ServerSideThrottle();
             throttle.setThrottle(item);
-
-            tempArr.push(throttle)
+            return throttle;
         })
-        this.throttleList = tempArr
     }
 
-    throttle(req: Request, res: Response, next: Function) {
-        let end = true
-
-        this.throttleList?.forEach(item=>{
+    throttle = (req: Request, res: Response, next: Function) => {
+        for (const item of this.throttleList || []) {
             const result:ResponseData = item.throttleGlobal(req,res,next);
-            if(result.name != 'NEXT'){
-                end = false
+            if (result.body) {
                 return res.status(result.status).json(result.body)
-                
             }
-        })
-        if(end){
-            return next();
         }
+        return next();
     }
-
-
 
 }
 
